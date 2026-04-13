@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Admin Panel</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h1>Admin Panel</h1>
+
+<div class="card">
+  <h3>Upload Notes (PDF)</h3>
+  <input type="file" id="file">
+  <button onclick="uploadFile()">Upload</button>
+</div>
+
+<div class="card">
+  <h3>Add Announcement</h3>
+  <input type="text" id="announcement">
+  <button onclick="addAnnouncement()">Add</button>
+</div>
+
+<div class="card">
+  <h3>Add Timetable</h3>
+  <input type="text" id="timetable">
+  <button onclick="addTimetable()">Add</button>
+</div>
+
+<script src="firebase.js"></script>
+
+<script>
+function uploadFile() {
+  const file = document.getElementById("file").files[0];
+  const storageRef = firebase.storage().ref("notes/" + file.name);
+
+  storageRef.put(file).then(() => {
+    storageRef.getDownloadURL().then(url => {
+      firebase.firestore().collection("notes").add({ url });
+      alert("Uploaded successfully!");
+    });
+  });
+}
+
+function addAnnouncement() {
+  const text = document.getElementById("announcement").value;
+
+  firebase.firestore().collection("announcements").add({
+    text: text
+  });
+
+  alert("Added!");
+}
+
+function addTimetable() {
+  const text = document.getElementById("timetable").value;
+
+  firebase.firestore().collection("timetable").add({
+    text: text
+  });
+
+  alert("Added!");
+}
+</script>
+
+</body>
+</html>
